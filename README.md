@@ -9,11 +9,12 @@ Keep LaTeX folders clean and compile automatically
 ```
     $ tidytex path/to/my/texfile.tex
     [2015-01-15 22:53:35.221573] Compilation 1 successful!
+    ...
 ```
 
 Then saving `texfile.tex` will trigger an automatic compiling of texfile.tex.  Also, 
 ```
-    ➜  ~  tidytex --help
+colinc@colinc-mbp:~$ tidytex --help
 Usage: tidytex [OPTIONS] TEXFILE
 
   Monitor a LaTeX file, and compile on save.  Pass in the path to the file.
@@ -26,6 +27,7 @@ Options:
   -s, --success / -ns, --no-success
                                   Show message on successful compilation?
   --help                          Show this message and exit.
+```
 
 # TODO
 * If the user saves twice, we should abandon the current compiling and start a new one
