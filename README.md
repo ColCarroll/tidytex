@@ -2,9 +2,11 @@
 Keep LaTeX folders clean and compile automatically
 
 # installation
-
-`pip install git+https://github.com/ColCarroll/tidytex.git@master`
-This will install [Click](http://click.pocoo.org/3/) to run from the command line, and [pexpect](http://pexpect.readthedocs.org/en/latest/) to handle output from `pdflatex`.
+Possibly with `sudo`, run
+```
+pip install git+https://github.com/ColCarroll/tidytex.git@master
+```
+This will install `tidytex`, [Click](http://click.pocoo.org/3/) to run from the command line, and [pexpect](http://pexpect.readthedocs.org/en/latest/) to handle output from `pdflatex`.
 
 Also, this is just a wrapper around `pdflatex`, so you'll need to have everything installed and configured so that `$ pdflatex mytexfile.tex` works.
 
