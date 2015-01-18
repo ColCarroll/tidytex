@@ -5,6 +5,7 @@ import tempfile
 import shutil
 import time
 import click
+import sys
 
 
 @click.command()
@@ -26,45 +27,71 @@ def modification_date(filename):
     return os.path.getmtime(filename)
 
 
+class FileWatcher:
+    def __init__(self, filename):
+        self.filename = filename
+        self.last_mod_time = self._mod_time()
+
+    def _mod_time(self):
+        return os.path.getmtime(self.filename)
+
+    def was_updated(self):
+        new_time = self._mod_time()
+        if new_time != self.last_mod_time:
+            self.last_mod_time = new_time
+            return True
+        return False
+
+
 def monitor_file(filename, success, timeout):
-    counter = pdf_tex(filename, success, 0)
-    old_time = modification_date(filename)
+    file_watcher = FileWatcher(filename)
+    tex_process, temp_dir = spawn_compiler(filename)
+    pdf_tex(tex_process, filename, temp_dir, success)
     while True:
-        new_time = modification_date(filename)
-        if new_time != old_time:
-            counter = pdf_tex(filename, success, counter)
-            old_time = new_time
+        if file_watcher.was_updated():
+            tex_process, temp_dir = spawn_compiler(filename)
+            pdf_tex(tex_process, filename, temp_dir, success)
         time.sleep(timeout)
 
 
-def pdf_tex(texfile, print_success, counter):
+def print_process(tex_process):
+    print tex_process.before
+
+
+def spawn_compiler(texfile):
     if not os.path.exists(texfile):
         raise IOError("No such file {:s}".format(texfile))
 
     if not texfile.endswith(".tex"):
         raise IOError("Must supply a file with suffix '.tex' (you supplied {:s})".format(texfile))
 
-    tex_dir, tex_filename = os.path.split(texfile)
     temp_dir = tempfile.mkdtemp()
 
-    tex_process = pexpect.spawn("pdflatex -output-directory={:s} {:s}".format(temp_dir, texfile))
-    was_success = True
-    while True:
-        i = tex_process.expect(["!", pexpect.EOF])
-        if i == 0:
-            was_success = False
-            tex_process.interact()
-        elif i == 1:
-            if was_success and print_success:
-                counter += 1
-                print("[{:s}] Compilation {:,d} successful!".format(str(datetime.datetime.today()), counter))
-            break
+    return pexpect.spawn("pdflatex -output-directory={:s} {:s}".format(temp_dir, texfile), maxread=10000), temp_dir
 
+
+def pdf_tex(tex_process, texfile, temp_dir, print_success):
+    was_success = True
+    i = tex_process.expect(["!", pexpect.EOF])
+    if i == 0:
+        tex_process.sendline('')
+        print_process(tex_process)
+        j = 0
+        while j != 1:
+            j = tex_process.expect(["!", pexpect.EOF])
+            print_process(tex_process)
+            if j == 0:
+                tex_process.sendline('')
+    elif i == 1:
+        if was_success and print_success:
+            print("[{:s}] Compilation successful!".format(str(datetime.datetime.today())))
+
+    tex_dir, tex_filename = os.path.split(texfile)
     pdf_filename = "{:s}.pdf".format(tex_filename[:-4])
     if os.path.exists(os.path.join(temp_dir, pdf_filename)):
         shutil.move(os.path.join(temp_dir, pdf_filename), os.path.join(tex_dir, pdf_filename))
     shutil.rmtree(temp_dir)
-    return counter
+
 
 if __name__ == '__main__':
     tidy()
