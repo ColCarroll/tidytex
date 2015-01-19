@@ -16,6 +16,12 @@ setup(
         'Click',
         'pexpect',
     ],
+    license="GPLv3",
+    classifiers=[
+	    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+	    'Environment :: Console',
+	    'Topic :: Text Processing :: Markup :: LaTeX'
+    ],
     entry_points='''
         [console_scripts]
         tidytex=tidytex:tidy

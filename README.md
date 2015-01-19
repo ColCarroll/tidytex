@@ -2,10 +2,12 @@
 Keep LaTeX folders clean and compile automatically
 
 # installation
-Possibly with `sudo`, run
+
+You can get the script directly from PyPI:
 ```
-pip install git+https://github.com/ColCarroll/tidytex.git@master
+pip install tidytex
 ```
+
 This will install `tidytex`, [Click](http://click.pocoo.org/3/) to run from the command line, and [pexpect](http://pexpect.readthedocs.org/en/latest/) to handle output from `pdflatex`.
 
 Also, this is just a wrapper around `pdflatex`, so you'll need to have everything installed and configured so that `$ pdflatex mytexfile.tex` works.
