@@ -10,6 +10,7 @@ setup(
     ''',
     author='Colin Carroll',
     py_modules=['tidytex'],
+    url='https://github.com/ColCarroll/tidytex',
     include_package_data=True,
     install_requires=[
         'Click',
