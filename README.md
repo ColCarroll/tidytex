@@ -36,6 +36,5 @@ Options:
 ```
 
 # TODO
-* Right now, if there is an error, the user must interact with the open terminal before monitoring of the file continues. We should kill the thread running `pdflatex` and start a new one.
 * There should be an option to keep auxiliary files around
 * There should be an option to turn off automatic compiling
